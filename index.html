@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- SEO Meta Tags & Keywords -->
-    <title>أحدث الأسئلة والأجوبة الفلكية - دنيا الأبراج</title>
-    <meta name="description" content="تابع أحدث الأسئلة والأجوبة والاستفسارات الفلكية وحظك اليوم وتوقعات الأبراج بشكل متجدد يومياً عبر منصة دنيا الأبراج.">
+    <title>أحدث الأخبار والمقالات والأسئلة الفلكية - دنيا الأبراج</title>
+    <meta name="description" content="تابع أحدث المقالات والأخبار الفلكية والأسئلة الشائعة وحظك اليوم وتوقعات الأبراج بشكل متجدد يومياً عبر منصة دنيا الأبراج.">
     <meta name="keywords" content="أخبار الأبراج, حظك اليوم, توقعات الأبراج, فلك, أسئلة وأجوبة, دنيا الأبراج">
     <link rel="canonical" href="https://yallanewsnet.onrender.com/">
 
     <!-- Open Graph / Social Media Meta Tags -->
-    <meta property="og:title" content="أحدث الأسئلة والأجوبة الفلكية - دنيا الأبراج">
-    <meta property="og:description" content="تابع أحدث الأسئلة والأجوبة والاستفسارات الفلكية وحظك اليوم وتوقعات الأبراج بشكل متجدد يومياً عبر منصة دنيا الأبراج.">
+    <meta property="og:title" content="أحدث الأخبار والمقالات والأسئلة الفلكية - دنيا الأبراج">
+    <meta property="og:description" content="تابع أحدث المقالات والأخبار الفلكية والأسئلة الشائعة وحظك اليوم وتوقعات الأبراج بشكل متجدد يومياً عبر منصة دنيا الأبراج.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://yallanewsnet.onrender.com/">
 
@@ -298,7 +298,7 @@
 <body>
 
     <header>
-        <h1><span>✨</span> أحدث الأسئلة والأجوبة الفلكية <span>✨</span></h1>
+        <h1><span>✨</span> أحدث الأخبار والمقالات الفلكية <span>✨</span></h1>
         <a href="https://doniaalabraj.com" target="_blank" rel="noopener noreferrer" class="site-link-btn">
             زيارة موقع دنيا الأبراج
         </a>
@@ -307,7 +307,7 @@
     <main id="app">
         <div class="loading-state">
             <div class="spinner"></div>
-            <p>جارٍ تحميل الأسئلة والأجوبة الفلكية...</p>
+            <p>جارٍ تحميل المحتوى الفلكي...</p>
         </div>
     </main>
 
@@ -319,33 +319,45 @@
         (function () {
             'use strict';
 
-            const RSS_URL = 'https://doniaalabraj.com/rss/category/Questions-and-Answers';
+            // خلاصتان: المقالات العامة + الأسئلة والأجوبة
+            const RSS_URL_1 = 'https://doniaalabraj.com/rss/latest-posts';
+            const RSS_URL_2 = 'https://doniaalabraj.com/rss/category/Questions-and-Answers';
+            
             const SITE_URL = 'https://doniaalabraj.com';
-            const API_URL = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(RSS_URL);
+            const API_URL_1 = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(RSS_URL_1);
+            const API_URL_2 = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(RSS_URL_2);
 
             const app = document.getElementById('app');
 
-            async function loadFeed() {
+            async function loadFeeds() {
                 try {
-                    const response = await fetch(API_URL);
+                    const [res1, res2] = await Promise.all([
+                        fetch(API_URL_1).catch(() => null),
+                        fetch(API_URL_2).catch(() => null)
+                    ]);
 
-                    if (!response.ok) {
-                        throw new Error(`فشل الاتصال بالخدمة (رمز الحالة: ${response.status})`);
+                    let allItems = [];
+
+                    if (res1 && res1.ok) {
+                        const data1 = await res1.json();
+                        if (data1.status === 'ok' && data1.items) {
+                            allItems = allItems.concat(data1.items);
+                        }
                     }
 
-                    const data = await response.json();
-
-                    if (data.status !== 'ok') {
-                        throw new Error(data.message || 'فشل جلب البيانات من الخلاصة.');
+                    if (res2 && res2.ok) {
+                        const data2 = await res2.json();
+                        if (data2.status === 'ok' && data2.items) {
+                            allItems = allItems.concat(data2.items);
+                        }
                     }
 
-                    if (!data.items || data.items.length === 0) {
+                    if (allItems.length === 0) {
                         renderEmpty();
                         return;
                     }
 
-                    // تحويل وتجهيز المقالات
-                    const posts = data.items.map(function (item, index) {
+                    const posts = allItems.map(function (item, index) {
                         const tempDiv = document.createElement('div');
                         tempDiv.innerHTML = item.description || '';
                         let summary = tempDiv.textContent || tempDiv.innerText || '';
@@ -358,27 +370,26 @@
                         }
 
                         if (!summary) {
-                            summary = 'اضغط على زر المتابعة لقراءة السؤال والجواب كاملاً.';
+                            summary = 'اضغط على زر المتابعة لقراءة المحتوى كاملاً.';
                         }
 
                         return {
-                            title: item.title || `سؤال فلكي بدون عنوان #${index + 1}`,
+                            title: item.title || `مقال فلكي بدون عنوان #${index + 1}`,
                             link: item.link || SITE_URL,
                             summary: summary
                         };
                     });
 
-                    // اختيار 3 بطاقات عشوائية مع كل زيارة
-                    const randomThreePosts = getRandomPosts(posts, 3);
-                    renderPosts(randomThreePosts);
+                    // اختيار 5 بطاقات عشوائية من مجموع الخلاصتين مع كل زيارة
+                    const randomPosts = getRandomPosts(posts, 5);
+                    renderPosts(randomPosts);
 
                 } catch (error) {
-                    console.error('خطأ في تحميل الخلاصة:', error);
+                    console.error('خطأ في تحميل الخلاصات:', error);
                     renderError(error.message);
                 }
             }
 
-            // دالة اختيار عناصر عشوائية من المصفوفة
             function getRandomPosts(array, count) {
                 const shuffled = [...array].sort(() => 0.5 - Math.random());
                 return shuffled.slice(0, count);
@@ -414,7 +425,7 @@
                     readMoreLink.href = post.link;
                     readMoreLink.target = '_blank';
                     readMoreLink.rel = 'noopener noreferrer';
-                    readMoreLink.innerHTML = '<span>قراءة الجواب</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                    readMoreLink.innerHTML = '<span>متابعة</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
                     footerEl.appendChild(readMoreLink);
 
                     card.appendChild(titleEl);
@@ -433,7 +444,7 @@
             }
 
             function renderEmpty() {
-                app.innerHTML = '<div class="empty-state"><p>لا توجد أسئلة أو أجوبة متاحة حالياً.</p></div>';
+                app.innerHTML = '<div class="empty-state"><p>لا توجد مقالات أو أسئلة متاحة حالياً.</p></div>';
             }
 
             function escapeHtml(text) {
@@ -444,7 +455,7 @@
 
             document.getElementById('year').textContent = new Date().getFullYear();
 
-            loadFeed();
+            loadFeeds();
         })();
     </script>
 </body>
