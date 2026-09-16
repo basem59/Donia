@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- SEO Meta Tags & Keywords -->
-    <title>أحدث الأخبار والمقالات الفلكية - دنيا الأبراج</title>
-    <meta name="description" content="تابع أحدث المقالات والأخبار الفلكية وحظك اليوم وتوقعات الأبراج بشكل متجدد يومياً عبر منصة دنيا الأبراج.">
-    <meta name="keywords" content="أخبار الأبراج, حظك اليوم, توقعات الأبراج, فلك, دنيا الأبراج">
+    <title>أحدث الأسئلة والأجوبة الفلكية - دنيا الأبراج</title>
+    <meta name="description" content="تابع أحدث الأسئلة والأجوبة والاستفسارات الفلكية وحظك اليوم وتوقعات الأبراج بشكل متجدد يومياً عبر منصة دنيا الأبراج.">
+    <meta name="keywords" content="أخبار الأبراج, حظك اليوم, توقعات الأبراج, فلك, أسئلة وأجوبة, دنيا الأبراج">
     <link rel="canonical" href="https://yallanewsnet.onrender.com/">
 
     <!-- Open Graph / Social Media Meta Tags -->
-    <meta property="og:title" content="أحدث الأخبار والمقالات الفلكية - دنيا الأبراج">
-    <meta property="og:description" content="تابع أحدث المقالات والأخبار الفلكية وحظك اليوم وتوقعات الأبراج بشكل متجدد يومياً عبر منصة دنيا الأبراج.">
+    <meta property="og:title" content="أحدث الأسئلة والأجوبة الفلكية - دنيا الأبراج">
+    <meta property="og:description" content="تابع أحدث الأسئلة والأجوبة والاستفسارات الفلكية وحظك اليوم وتوقعات الأبراج بشكل متجدد يومياً عبر منصة دنيا الأبراج.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://yallanewsnet.onrender.com/">
 
@@ -298,7 +298,7 @@
 <body>
 
     <header>
-        <h1><span>✨</span> أحدث الأخبار والمقالات الفلكية <span>✨</span></h1>
+        <h1><span>✨</span> أحدث الأسئلة والأجوبة الفلكية <span>✨</span></h1>
         <a href="https://doniaalabraj.com" target="_blank" rel="noopener noreferrer" class="site-link-btn">
             زيارة موقع دنيا الأبراج
         </a>
@@ -307,7 +307,7 @@
     <main id="app">
         <div class="loading-state">
             <div class="spinner"></div>
-            <p>جارٍ تحميل المقالات والأخبار الفلكية...</p>
+            <p>جارٍ تحميل الأسئلة والأجوبة الفلكية...</p>
         </div>
     </main>
 
@@ -319,7 +319,7 @@
         (function () {
             'use strict';
 
-            const RSS_URL = 'https://doniaalabraj.com/rss/latest-posts';
+            const RSS_URL = 'https://doniaalabraj.com/rss/category/Questions-and-Answers';
             const SITE_URL = 'https://doniaalabraj.com';
             const API_URL = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(RSS_URL);
 
@@ -344,6 +344,7 @@
                         return;
                     }
 
+                    // تحويل وتجهيز المقالات
                     const posts = data.items.map(function (item, index) {
                         const tempDiv = document.createElement('div');
                         tempDiv.innerHTML = item.description || '';
@@ -357,23 +358,30 @@
                         }
 
                         if (!summary) {
-                            summary = 'اضغط على زر المتابعة لقراءة المقال كاملاً.';
+                            summary = 'اضغط على زر المتابعة لقراءة السؤال والجواب كاملاً.';
                         }
 
                         return {
-                            title: item.title || `مقال بدون عنوان #${index + 1}`,
+                            title: item.title || `سؤال فلكي بدون عنوان #${index + 1}`,
                             link: item.link || SITE_URL,
-                            summary: summary,
-                            index: index
+                            summary: summary
                         };
                     });
 
-                    renderPosts(posts);
+                    // اختيار 3 بطاقات عشوائية مع كل زيارة
+                    const randomThreePosts = getRandomPosts(posts, 3);
+                    renderPosts(randomThreePosts);
 
                 } catch (error) {
                     console.error('خطأ في تحميل الخلاصة:', error);
                     renderError(error.message);
                 }
+            }
+
+            // دالة اختيار عناصر عشوائية من المصفوفة
+            function getRandomPosts(array, count) {
+                const shuffled = [...array].sort(() => 0.5 - Math.random());
+                return shuffled.slice(0, count);
             }
 
             function renderPosts(posts) {
@@ -406,7 +414,7 @@
                     readMoreLink.href = post.link;
                     readMoreLink.target = '_blank';
                     readMoreLink.rel = 'noopener noreferrer';
-                    readMoreLink.innerHTML = '<span>متابعة</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                    readMoreLink.innerHTML = '<span>قراءة الجواب</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
                     footerEl.appendChild(readMoreLink);
 
                     card.appendChild(titleEl);
@@ -425,7 +433,7 @@
             }
 
             function renderEmpty() {
-                app.innerHTML = '<div class="empty-state"><p>لا توجد مقالات متاحة حالياً.</p></div>';
+                app.innerHTML = '<div class="empty-state"><p>لا توجد أسئلة أو أجوبة متاحة حالياً.</p></div>';
             }
 
             function escapeHtml(text) {
