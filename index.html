@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اخبار ومقالات - دنيا الأبراج</title>
+    <!-- خطوط جوجل لإعطاء طابع فلكي أنيق -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* لوحة ألوان فلكية: ليل داكن + ذهبي */
+            --bg: #0a0b10;
+            --card-bg: rgba(20, 22, 43, 0.85);
+            --text-main: #f4ebd9;
+            --text-muted: #a39c8f;
+            --accent: #d4af37;
+            --accent-hover: #f3c63f;
+            --border: #2a2d4a;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            --glow: 0 0 15px rgba(212, 175, 55, 0.3);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            /* خلفية كونية متدرجة */
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, #1a1c38 0%, #0a0b10 100%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        /* إضافة تأثير نجمي خفيف حول العنوان */
+        header::after {
+            content: '✦';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--accent);
+            font-size: 20px;
+            background: var(--bg);
+            padding: 0 10px;
+            text-shadow: var(--glow);
+        }
+
+        h1 {
+            font-family: 'Amiri', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        h1 span {
+            color: var(--accent);
+            font-size: 1.8rem;
+            vertical-align: middle;
+        }
+
+        .site-link-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #d4af37 0%, #b8932f 100%);
+            color: #0a0b10;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .site-link-btn:hover {
+            background: linear-gradient(135deg, #f3c63f 0%, #d4af37 100%);
+            transform: translateY(-2px);
+            box-shadow: var(--glow);
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(212, 175, 55, 0.1);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(185, 28, 28, 0.1);
+            border: 1px solid rgba(185, 28, 28, 0.3);
+            border-radius: var(--radius);
+            color: #fca5a5;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .error-state strong {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            color: #f87171;
+        }
+
+        .posts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* تصميم البطاقات بطابع زجاجي فلكي */
+        .post-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* تأثير نجمي خفيف داخل البطاقة */
+        .post-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.3;
+            transition: opacity 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), var(--glow);
+            border-color: rgba(212, 175, 55, 0.4);
+        }
+
+        .post-card:hover::before {
+            opacity: 1;
+        }
+
+        .post-title {
+            font-family: 'Amiri', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .post-title a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .post-title a:hover {
+            color: var(--accent);
+        }
+
+        .post-summary {
+            font-size: 1rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-weight: 400;
+        }
+
+        .post-summary p {
+            margin: 0;
+        }
+
+        .post-footer {
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .read-more-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: transparent;
+            color: var(--accent);
+            border: 1.5px solid var(--accent);
+            padding: 8px 22px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .read-more-btn:hover {
+            background-color: var(--accent);
+            color: #0a0b10;
+            box-shadow: var(--glow);
+        }
+
+        .read-more-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            transition: transform 0.3s ease;
+        }
+
+        .read-more-btn:hover svg {
+            transform: translateX(-3px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            font-family: 'Amiri', serif;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 25px 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 15px; }
+            h1 { font-size: 2rem; }
+            .post-card { padding: 20px; }
+            .post-title { font-size: 1.15rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><span>✨</span> اخبار ومقالات <span>✨</span></h1>
+        <a href="https://doniaalabraj.com" target="_blank" rel="noopener noreferrer" class="site-link-btn">
+            زيارة موقع دنيا الأبراج
+        </a>
+    </header>
+
+    <main id="app">
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>جارٍ تحميل الأخبار والمقالات الفلكية...</p>
+        </div>
+    </main>
+
+    <div class="footer">
+        &copy; <span id="year"></span> <a href="https://doniaalabraj.com" target="_blank" rel="noopener noreferrer">دنيا الأبراج</a> - جميع الحقوق محفوظة.
+    </div>
+
+    <script>
+        (function () {
+            'use strict';
+
+            const RSS_URL = 'https://doniaalabraj.com/rss/latest-posts';
+            const SITE_URL = 'https://doniaalabraj.com';
+            // استخدام خدمة rss2json المتخصصة
+            const API_URL = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(RSS_URL);
+
+            const app = document.getElementById('app');
+
+            async function loadFeed() {
+                try {
+                    const response = await fetch(API_URL);
+
+                    if (!response.ok) {
+                        throw new Error(`فشل الاتصال بالخدمة (رمز الحالة: ${response.status})`);
+                    }
+
+                    const data = await response.json();
+
+                    if (data.status !== 'ok') {
+                        throw new Error(data.message || 'فشل جلب البيانات من الخلاصة.');
+                    }
+
+                    if (!data.items || data.items.length === 0) {
+                        renderEmpty();
+                        return;
+                    }
+
+                    const posts = data.items.map(function (item, index) {
+                        // تنظيف الوصف من وسوم HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = item.description || '';
+                        let summary = tempDiv.textContent || tempDiv.innerText || '';
+                        
+                        summary = summary.replace(/\s+/g, ' ').trim();
+
+                        const MAX_SUMMARY_LENGTH = 200;
+                        if (summary.length > MAX_SUMMARY_LENGTH) {
+                            summary = summary.substring(0, MAX_SUMMARY_LENGTH).trim() + '…';
+                        }
+
+                        if (!summary) {
+                            summary = 'اضغط على زر المتابعة لقراءة المقال كاملاً.';
+                        }
+
+                        return {
+                            title: item.title || `مقال بدون عنوان #${index + 1}`,
+                            link: item.link || SITE_URL,
+                            summary: summary,
+                            index: index
+                        };
+                    });
+
+                    renderPosts(posts);
+
+                } catch (error) {
+                    console.error('خطأ في تحميل الخلاصة:', error);
+                    renderError(error.message);
+                }
+            }
+
+            function renderPosts(posts) {
+                const container = document.createElement('div');
+                container.className = 'posts-container';
+
+                posts.forEach(function (post) {
+                    const card = document.createElement('article');
+                    card.className = 'post-card';
+
+                    const titleEl = document.createElement('h2');
+                    titleEl.className = 'post-title';
+                    const titleLink = document.createElement('a');
+                    titleLink.href = post.link;
+                    titleLink.target = '_blank';
+                    titleLink.rel = 'noopener noreferrer';
+                    titleLink.textContent = post.title;
+                    titleEl.appendChild(titleLink);
+
+                    const summaryEl = document.createElement('div');
+                    summaryEl.className = 'post-summary';
+                    const summaryP = document.createElement('p');
+                    summaryP.textContent = post.summary;
+                    summaryEl.appendChild(summaryP);
+
+                    const footerEl = document.createElement('div');
+                    footerEl.className = 'post-footer';
+                    const readMoreLink = document.createElement('a');
+                    readMoreLink.className = 'read-more-btn';
+                    readMoreLink.href = post.link;
+                    readMoreLink.target = '_blank';
+                    readMoreLink.rel = 'noopener noreferrer';
+                    readMoreLink.innerHTML = '<span>متابعة</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                    footerEl.appendChild(readMoreLink);
+
+                    card.appendChild(titleEl);
+                    card.appendChild(summaryEl);
+                    card.appendChild(footerEl);
+
+                    container.appendChild(card);
+                });
+
+                app.innerHTML = '';
+                app.appendChild(container);
+            }
+
+            function renderError(message) {
+                app.innerHTML = '<div class="error-state"><strong>عذراً، حدث خطأ</strong><p>' + escapeHtml(message) + '</p><p style="margin-top:12px;font-size:0.85rem;">يمكنك المحاولة مرة أخرى لاحقاً، أو زيارة <a href="' + SITE_URL + '" target="_blank" rel="noopener noreferrer" style="color:inherit;font-weight:700;">الموقع مباشرة</a>.</p></div>';
+            }
+
+            function renderEmpty() {
+                app.innerHTML = '<div class="empty-state"><p>لا توجد مقالات متاحة حالياً.</p></div>';
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.appendChild(document.createTextNode(text));
+                return div.innerHTML;
+            }
+
+            // تحديث السنة تلقائياً
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            loadFeed();
+        })();
+    </script>
+</body>
+</html>
