@@ -3,7 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اخبار ومقالات - دنيا الأبراج</title>
+    
+    <!-- SEO Meta Tags & Keywords -->
+    <title>أحدث الأخبار والمقالات الفلكية - دنيا الأبراج</title>
+    <meta name="description" content="تابع أحدث المقالات والأخبار الفلكية وحظك اليوم وتوقعات الأبراج بشكل متجدد يومياً عبر منصة دنيا الأبراج.">
+    <meta name="keywords" content="أخبار الأبراج, حظك اليوم, توقعات الأبراج, فلك, دنيا الأبراج">
+    <link rel="canonical" href="https://yallanewsnet.onrender.com/">
+
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="أحدث الأخبار والمقالات الفلكية - دنيا الأبراج">
+    <meta property="og:description" content="تابع أحدث المقالات والأخبار الفلكية وحظك اليوم وتوقعات الأبراج بشكل متجدد يومياً عبر منصة دنيا الأبراج.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yallanewsnet.onrender.com/">
+
     <!-- خطوط جوجل لإعطاء طابع فلكي أنيق -->
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -30,7 +42,6 @@
         body {
             font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg);
-            /* خلفية كونية متدرجة */
             background-image: 
                 radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 40%),
@@ -52,7 +63,6 @@
             position: relative;
         }
 
-        /* إضافة تأثير نجمي خفيف حول العنوان */
         header::after {
             content: '✦';
             position: absolute;
@@ -148,7 +158,6 @@
             gap: 20px;
         }
 
-        /* تصميم البطاقات بطابع زجاجي فلكي */
         .post-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -165,7 +174,6 @@
             overflow: hidden;
         }
 
-        /* تأثير نجمي خفيف داخل البطاقة */
         .post-card::before {
             content: '';
             position: absolute;
@@ -290,7 +298,7 @@
 <body>
 
     <header>
-        <h1><span>✨</span> اخبار ومقالات <span>✨</span></h1>
+        <h1><span>✨</span> أحدث الأخبار والمقالات الفلكية <span>✨</span></h1>
         <a href="https://doniaalabraj.com" target="_blank" rel="noopener noreferrer" class="site-link-btn">
             زيارة موقع دنيا الأبراج
         </a>
@@ -299,7 +307,7 @@
     <main id="app">
         <div class="loading-state">
             <div class="spinner"></div>
-            <p>جارٍ تحميل الأخبار والمقالات الفلكية...</p>
+            <p>جارٍ تحميل المقالات والأخبار الفلكية...</p>
         </div>
     </main>
 
@@ -313,7 +321,6 @@
 
             const RSS_URL = 'https://doniaalabraj.com/rss/latest-posts';
             const SITE_URL = 'https://doniaalabraj.com';
-            // استخدام خدمة rss2json المتخصصة
             const API_URL = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(RSS_URL);
 
             const app = document.getElementById('app');
@@ -338,7 +345,6 @@
                     }
 
                     const posts = data.items.map(function (item, index) {
-                        // تنظيف الوصف من وسوم HTML
                         const tempDiv = document.createElement('div');
                         tempDiv.innerHTML = item.description || '';
                         let summary = tempDiv.textContent || tempDiv.innerText || '';
@@ -428,7 +434,6 @@
                 return div.innerHTML;
             }
 
-            // تحديث السنة تلقائياً
             document.getElementById('year').textContent = new Date().getFullYear();
 
             loadFeed();
